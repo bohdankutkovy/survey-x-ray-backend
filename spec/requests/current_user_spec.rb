@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'devise/jwt/test_helpers'
 
 RSpec.describe "CurrentUsers", type: :request do
   describe "GET /index" do
@@ -12,7 +11,7 @@ RSpec.describe "CurrentUsers", type: :request do
     it "returns current_user" do
       get "/current_user", headers: @auth_headers
 
-      expect(response).to have_http_status(:success)
+      expect(response).to              have_http_status(:success)
       expect(response.content_type).to eq("application/json; charset=utf-8")
 
       expect(json['id']).to eq(user.id)
@@ -21,7 +20,7 @@ RSpec.describe "CurrentUsers", type: :request do
     it "fails to return current_user" do
       get "/current_user"
 
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to      have_http_status(:unauthorized)
       expect(response.body).to eq("You need to sign in or sign up before continuing.")
     end
   end
