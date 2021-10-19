@@ -6,6 +6,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  # Relations
+  has_many :questionnaires, dependent: :destroy
+  has_many :answers,        dependent: :destroy
+
   # Validations
   validates_uniqueness_of :email
   validates :email, :firstname, :lastname, presence: true
@@ -22,7 +26,7 @@ end
 #
 # Table name: users
 #
-#  id                     :bigint           not null, primary key
+#  id                     :uuid             not null, primary key
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  firstname              :string
