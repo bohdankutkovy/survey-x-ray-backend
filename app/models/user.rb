@@ -1,12 +1,21 @@
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+
+  rolify
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  # Validations
   validates_uniqueness_of :email
+  validates :email, :firstname, :lastname, presence: true
+
+  # Callbacks
+  after_create :assign_default_role
+
+  def assign_default_role
+    self.add_role(Role::NAMES[:candidate]) if self.roles.blank?
+  end
 end
 
 # == Schema Information
@@ -16,7 +25,9 @@ end
 #  id                     :bigint           not null, primary key
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  firstname              :string
 #  jti                    :string           not null
+#  lastname               :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
